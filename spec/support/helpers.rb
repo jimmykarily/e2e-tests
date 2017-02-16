@@ -7,6 +7,17 @@ module Helpers
   def spawn_minion
   end
 
+  # Runs the script that creates the testing environment
+  def start_environment
+    script = File.join(
+      File.dirname(File.dirname(File.dirname(__FILE__))),
+      "scripts",
+      "start_environment"
+    )
+
+    `#{script}`
+  end
+
   private
 
   # This returns the server's host in tests with "js: true"
