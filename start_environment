@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+log()   { echo ">>> $1" ; }
+
+SALT_DIR=$PWD/k8s-salt
+TERRAFORM_DIR=$PWD/k8s-terraform
+VELUM_DIR=$PWD/velum
+
+# Usage: fetch_repo "my_repo_url", "dir_name"
+fetch_repo() {
+  log 'Fetching '$1
+
+  new_dir="$PWD/$2"
+  old_dir=$PWD
+  mkdir $2
+  cd $2
+  git init
+  git remote add origin $1
+  git fetch origin
+  git reset --hard origin/master
+  cd $old_dir
+}
+
+fetch_repo 'https://gitlab.suse.de/docker/k8s-salt.git' $SALT_DIR
+fetch_repo 'https://gitlab.suse.de/docker/k8s-terraform.git' $TERRAFORM_DIR
+fetch_repo 'https://github.com/kubic-project/velum.git' $VELUM_DIR
+
+# Spawn the velum "development" environment (dashboard, salt-master,
+# salt-api, ca, etcd)
+cd $VELUM_DIR/kubernetes
+SALT_DIR=$SALT_DIR ./start
