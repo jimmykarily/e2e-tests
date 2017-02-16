@@ -2,7 +2,12 @@ require "spec_helper"
 
 feature "Boostrap cluster" do
   before do
+    start_environment
     login
+  end
+
+  after do
+    cleanup
   end
 
   scenario "it lets the user log in" do

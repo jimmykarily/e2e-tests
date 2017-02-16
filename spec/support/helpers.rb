@@ -9,16 +9,28 @@ module Helpers
 
   # Runs the script that creates the testing environment
   def start_environment
+    `#{File.join(scripts_path, "start_environment")}`
+  end
+
+  def cleanup
     script = File.join(
       File.dirname(File.dirname(File.dirname(__FILE__))),
-      "scripts",
-      "start_environment"
+      "velum",
+      "kubernetes",
+      "cleanup"
     )
 
     `#{script}`
   end
 
   private
+
+  def scripts_path
+    script = File.join(
+      File.dirname(File.dirname(File.dirname(__FILE__))),
+      "scripts",
+    )
+  end
 
   # This returns the server's host in tests with "js: true"
   def server_host

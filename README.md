@@ -19,17 +19,20 @@ and we use terraform to create salt-minions that act as workers on the platform.
 
 For now:
 
-**TODO**: Make everything completely automated
-
-```
-./start_environment
-```
-
-and when everything is up and running:
-
 ```
 rspec spec/**/*
 ```
+
+After the tests are done there should be:
+
+- no kubelet process running
+- no docker containers left running (only refers to those we spawned)
+
+## TODO:
+
+- The script that starts the kubelet (velum/kubernetes/start) and the script
+  that stops the kubelet, both need `sudo` to run. We want the tests to run
+  unsupervised so we need to get rid of those `sudo`s.
 
 ## License
 
