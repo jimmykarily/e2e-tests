@@ -2,9 +2,15 @@
 # A module containing helper methods to create a testing environment
 # for end to end tests.
 module Helpers
-  # Spawns a salt-minion which connects to velum
+  # Spawns salt-minions which connect to velum.
   # The minion is a Virtual Machine which we build using terraform.
-  def spawn_minion
+  def spawn_minions(number_of_minions)
+    number_of_minions.times { Minion.new }
+  end
+
+  # Removes all running minion VMs.
+  def cleanup_minions
+    Minion.cleanup
   end
 
   # Runs the script that creates the testing environment
@@ -12,7 +18,7 @@ module Helpers
     `#{File.join(scripts_path, "start_environment")}`
   end
 
-  def cleanup
+  def cleanup_environment
     script = File.join(
       File.dirname(File.dirname(File.dirname(__FILE__))),
       "velum",

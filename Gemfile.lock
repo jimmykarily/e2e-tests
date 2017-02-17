@@ -26,6 +26,7 @@ GEM
     rack (2.0.1)
     rack-test (0.6.3)
       rack (>= 1.0)
+    rake (10.4.2)
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
@@ -39,6 +40,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
+    ruby-libvirt (0.7.0)
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
@@ -51,7 +53,9 @@ PLATFORMS
 DEPENDENCIES
   capybara
   poltergeist
+  rake
   rspec
+  ruby-libvirt
 
 BUNDLED WITH
    1.13.7

@@ -17,10 +17,8 @@ and we use terraform to create salt-minions that act as workers on the platform.
 
 ## Running the tests
 
-For now:
-
 ```
-rspec spec/**/*
+rake test
 ```
 
 After the tests are done there should be:

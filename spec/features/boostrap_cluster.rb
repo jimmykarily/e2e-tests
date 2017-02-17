@@ -7,7 +7,7 @@ feature "Boostrap cluster" do
   end
 
   after do
-    cleanup
+    cleanup_environment
   end
 
   scenario "it lets the user log in" do
