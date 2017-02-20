@@ -1,0 +1,19 @@
+<volume type='file'>
+  <name><%= uuid %>.img</name>
+  <key>/var/lib/libvirt/images/<%= uuid %>.img</key>
+  <capacity unit='bytes'>838860800</capacity>
+  <allocation unit='bytes'>104857600</allocation>
+  <target>
+    <path>/var/lib/libvirt/images/<%= uuid %>.img</path>
+    <format type='qcow2'/>
+    <permissions>
+      <mode>0644</mode>
+      <owner>475</owner>
+      <group>472</group>
+    </permissions>
+  </target>
+  <backingStore>
+    <path><%= guest_disk %></path>
+    <format type='qcow2'/>
+  </backingStore>
+</volume>

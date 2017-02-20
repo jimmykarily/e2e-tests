@@ -7,7 +7,9 @@ class Minion
   GUEST_DISK = File.join(
     File.dirname(File.dirname(File.dirname(__FILE__))), "minion_disk.qcow2")
 
-  attr_reader :domain
+  STORAGE_POOL_NAME = "minions"
+
+  attr_reader :domain, :volume
 
   # Returns handlers for all running domains
   def self.all
@@ -24,9 +26,24 @@ class Minion
     Libvirt::open("qemu:///system") # Local instance for now
   end
 
+  def self.storage_pool
+    pool = conn.list_all_storage_pools.detect{|p| p.name == STORAGE_POOL_NAME }
+
+    unless pool
+      pool = conn.define_storage_pool_xml(minion_storage_pool_xml)
+      pool.build # Create the directory
+      pool.create # start up the pool
+    end
+
+    pool
+  end
+
   # Removes all running domains
   def self.cleanup
     self.all.map(&:destroy)
+    self.storage_pool.list_all_volumes.each(&:delete) rescue retry # tmp fix for "ArgumentError: Expected Connection object"
+    self.storage_pool.destroy
+    self.storage_pool.undefine
   end
 
   # This method is used in case we know the name of a domain but we don't
@@ -40,13 +57,17 @@ class Minion
   # We generate a new UUID to be used both as a name and uuid
   # https://libvirt.org/formatdomain.html#elementsMetadata
   def initialize
-    xml = self.class.minion_domain_xml(SecureRandom.uuid)
-
+    uuid = SecureRandom.uuid
+    # https://libvirt.org/ruby/examples/storage.rb
+    xml = self.class.minion_volume_xml(uuid)
+    @volume = self.class.storage_pool.create_volume_xml(xml)
+    xml = self.class.minion_domain_xml(uuid)
     @domain = self.class.conn.create_domain_xml(xml)
   end
 
   def destroy
     domain.destroy
+    volume.delete
   end
 
   private
@@ -55,6 +76,24 @@ class Minion
   def self.minion_domain_xml(uuid)
     template =
       File.read(File.join(File.dirname(__FILE__), 'minion_domain.xml.erb'))
+
+    pool_name = STORAGE_POOL_NAME
+
+    ERB.new(template).result(binding)
+  end
+
+  def self.minion_storage_pool_xml
+    template =
+      File.read(File.join(File.dirname(__FILE__), 'minion_storage_pool.xml.erb'))
+
+    pool_name = STORAGE_POOL_NAME
+
+    ERB.new(template).result(binding)
+  end
+
+  def self.minion_volume_xml(uuid)
+    template =
+      File.read(File.join(File.dirname(__FILE__), 'minion_volume.xml.erb'))
 
     guest_disk = GUEST_DISK
 
