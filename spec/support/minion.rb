@@ -40,7 +40,7 @@ class Minion
 
   # Removes all running domains
   def self.cleanup
-    self.all.map(&:destroy)
+    self.all.each{|domain| domain.active? ? domain.destroy : domain.undefine }
     self.storage_pool.list_all_volumes.each(&:delete) rescue retry # tmp fix for "ArgumentError: Expected Connection object"
     self.storage_pool.destroy
     self.storage_pool.undefine
