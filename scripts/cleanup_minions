@@ -12,7 +12,7 @@ fi
 sudo -v # Get sudo access
 
 # Remove domains
-sudo virsh list --all | tail -n +3 | awk '{print $2}' | while read domain
+sudo virsh list --all | tail -n +3 | grep e2e_tests | awk '{print $2}' | while read domain
 do
   if [[ ! -z "${domain//}" ]]
   then
@@ -23,7 +23,7 @@ do
 done
 
 # Remove volumes
-sudo virsh vol-list default | tail -n +3 | awk '{print $2}' | while read volume
+sudo virsh vol-list default | tail -n +3 | grep e2e_tests | awk '{print $2}' | while read volume
 do
   if [[ ! -z "${volume//}" ]]
   then
@@ -33,7 +33,7 @@ do
 done
 
 # Remove networks
-sudo virsh net-list --all | tail -n +3 | awk '{print $1}' | while read network
+sudo virsh net-list --all | tail -n +3 | grep e2e_tests | awk '{print $1}' | while read network
 do
   if [[ ! -z "${network//}" ]] && [ $network != "default" ]
   then
